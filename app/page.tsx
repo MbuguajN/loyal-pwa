@@ -23,6 +23,6 @@ export default function Home() {
     </div>
 
   } if (status === "unauthenticated") {
-    signIn(undefined, { redirect: false, redirectTo: pathName })
+    signIn(undefined, { redirectTo: pathName })
   }
 } 
