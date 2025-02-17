@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Suspense } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function Signin() {
   const callBackUrl = useSearchParams().get("callbackUrl");
@@ -32,7 +33,11 @@ export default function Signin() {
     router.push(callBackUrl ?? "/")
   }
   return (
-    <Suspense>
+    <Suspense fallback={
+
+      <Loader2 className="w-12 h-12 mb-4 text-blue-500 animate-spin mx-auto" />
+
+    }>
       <div className="min-h-screen flex items-center justify-center">
         <Card>
           <CardHeader className="flex items-center justify-center">
@@ -112,7 +117,7 @@ export default function Signin() {
         </Card>
 
       </div>
-    </Suspense>
+    </Suspense >
 
 
   );
