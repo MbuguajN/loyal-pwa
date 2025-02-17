@@ -1,7 +1,7 @@
 'use client'
 import { Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
+//import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 export default function Home() {
   const { data: session, status } = useSession();
@@ -23,6 +23,6 @@ export default function Home() {
     </div>
 
   } if (status === "unauthenticated") {
-    signIn(undefined, { redirect: false, redirectTo: pathName })
+    signIn(undefined, { redirectTo: pathName })
   }
 } 

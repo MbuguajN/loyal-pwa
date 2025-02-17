@@ -86,7 +86,7 @@ export default function Signin() {
                 Login
               </Button>
               <Button onClick={() => {
-                signIn('google', { redirect: false }).then(data => {
+                signIn('google',).then(data => {
                   console.log({ data })
                   if (data?.ok) {
                     toast({
