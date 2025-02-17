@@ -82,7 +82,7 @@ export default function Signin() {
             <Button onClick={() => {
               signIn('google', { redirect: false }).then(data => {
                 console.log({ data })
-                /*if (data?.ok) {
+                if (data?.ok) {
                   toast({
                     variant: "default",
 
@@ -99,7 +99,7 @@ export default function Signin() {
                     action: <ToastAction altText="Try again">Try again</ToastAction>,
                   })
 
-                }*/
+                }
               })
             }} className="w-full m-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500">
               <FaGoogle /> Login with Google
