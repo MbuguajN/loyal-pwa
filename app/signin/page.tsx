@@ -18,7 +18,7 @@ import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
 export default function Signin() {
-  const callBackUrl = useSearchParams().get("callbackUrl");
+  //const callBackUrl = useSearchParams().get("callbackUrl");
   const { toast } = useToast()
   const router = useRouter()
   const { data: session, status } = useSession();
@@ -30,7 +30,7 @@ export default function Signin() {
       description: "Already Logged In",
     })
 
-    router.push(callBackUrl ?? "/")
+    // router.push(callBackUrl ?? "/")
   }
   return (
     <Suspense fallback={
