@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { FaGoogle } from "react-icons/fa";
+import { toast, useToast } from "@/hooks/use-toast"
+import { ToastAction } from "@/components/ui/toast";
 
 export default function Signin() {
   const callBackUrl = useSearchParams().get("callbackUrl");
@@ -47,7 +49,21 @@ export default function Signin() {
         <Button onClick={() => {
           signIn('google').then(data => {
             if (data?.ok) {
-              router
+              toast({
+                variant: "default",
+
+                description: "Logged In",
+              })
+
+              router.push(callBackUrl ?? "/")
+
+            } else {
+              toast({
+                variant: "destructive",
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+              })
 
             }
           })
