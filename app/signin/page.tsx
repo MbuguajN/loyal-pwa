@@ -13,24 +13,28 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function Signin() {
   //const callBackUrl = useSearchParams().get("callbackUrl");
   const { toast } = useToast()
   const router = useRouter()
   const { data: session, status } = useSession();
-  if (status === "authenticated") {
-    console.log({ session })
-    toast({
-      variant: "default",
+  useEffect(() => {
+    if (status === "authenticated") {
+      console.log({ session })
+      toast({
+        variant: "default",
 
-      description: "Already Logged In",
-    })
+        description: "Already Logged In",
+      })
 
-    // router.push(callBackUrl ?? "/")
-  }
+      router.back()
+    }
+  }, [status])
+
   return (
     <Suspense fallback={
 
@@ -38,6 +42,8 @@ export default function Signin() {
 
     }>
       <div className="min-h-screen flex items-center justify-center">
+
+        <Toaster />
         <Card>
           <CardHeader className="flex items-center justify-center">
             <CardTitle>Login</CardTitle>
@@ -85,27 +91,18 @@ export default function Signin() {
                 Login
               </Button>
               <Button onClick={() => {
-                signIn('google',).then(data => {
+                signIn('google')/*.then(data => {
                   console.log({ data })
-                  if (data?.ok) {
-                    toast({
-                      variant: "default",
-
-                      description: "Logged In",
-                    })
-
-                    //router.push(callBackUrl ?? "/")
-
-                  } else {
+                  if (data?.error) {
                     toast({
                       variant: "destructive",
-                      title: "Uh oh! Something went wrong.",
-                      description: "There was a problem with your request.",
-                      action: <ToastAction altText="Try again">Try again</ToastAction>,
+                      title: "Something went wrong.",
+                      description: "There was a problem authenticating your account.",
+
                     })
 
                   }
-                })
+                })*/
               }} className="w-full m-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500">
                 <FaGoogle /> Login with Google
               </Button>
