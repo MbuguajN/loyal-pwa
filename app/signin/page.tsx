@@ -1,7 +1,6 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { signIn, useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { FaGoogle } from "react-icons/fa";
 import { useToast } from "@/hooks/use-toast"
