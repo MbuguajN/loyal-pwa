@@ -14,6 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Suspense } from "react";
 
 export default function Signin() {
   const callBackUrl = useSearchParams().get("callbackUrl");
@@ -31,86 +32,87 @@ export default function Signin() {
     router.push(callBackUrl ?? "/")
   }
   return (
+    <Suspense>
+      <div className="min-h-screen flex items-center justify-center">
+        <Card>
+          <CardHeader className="flex items-center justify-center">
+            <CardTitle>Login</CardTitle>
+            <CardDescription>
+              <div className="flex justify-center mb-6">
+                <img src="https://placehold.co/100x100" alt="Logo" className="w-24 h-24"></img>
+              </div>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="p-8  w-full max-w-md">
 
-    <div className="min-h-screen flex items-center justify-center">
-      <Card>
-        <CardHeader className="flex items-center justify-center">
-          <CardTitle>Login</CardTitle>
-          <CardDescription>
-            <div className="flex justify-center mb-6">
-              <img src="https://placehold.co/100x100" alt="Logo" className="w-24 h-24"></img>
+
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Enter your email"
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+
+
             </div>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="p-8  w-full max-w-md">
 
+          </CardContent>
+          <CardFooter className="flex flex-col">
+            <div className="flex items-end">
 
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
+              <Button
+
+                className="w-full m-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                Login
+              </Button>
+              <Button onClick={() => {
+                signIn('google', { redirect: false }).then(data => {
+                  console.log({ data })
+                  if (data?.ok) {
+                    toast({
+                      variant: "default",
+
+                      description: "Logged In",
+                    })
+
+                    //router.push(callBackUrl ?? "/")
+
+                  } else {
+                    toast({
+                      variant: "destructive",
+                      title: "Uh oh! Something went wrong.",
+                      description: "There was a problem with your request.",
+                      action: <ToastAction altText="Try again">Try again</ToastAction>,
+                    })
+
+                  }
+                })
+              }} className="w-full m-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <FaGoogle /> Login with Google
+              </Button>
             </div>
+            <Button className="hover:text-orange-500" onClick={() => { router.push("/signup") }} variant="link">Don&apos;t have an account? SignUp</Button>
 
-            <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter your password"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
+          </CardFooter>
+        </Card>
 
-
-          </div>
-
-        </CardContent>
-        <CardFooter className="flex flex-col">
-          <div className="flex items-end">
-
-            <Button
-
-              className="w-full m-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
-              Login
-            </Button>
-            <Button onClick={() => {
-              signIn('google', { redirect: false }).then(data => {
-                console.log({ data })
-                if (data?.ok) {
-                  toast({
-                    variant: "default",
-
-                    description: "Logged In",
-                  })
-
-                  //router.push(callBackUrl ?? "/")
-
-                } else {
-                  toast({
-                    variant: "destructive",
-                    title: "Uh oh! Something went wrong.",
-                    description: "There was a problem with your request.",
-                    action: <ToastAction altText="Try again">Try again</ToastAction>,
-                  })
-
-                }
-              })
-            }} className="w-full m-2 bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500">
-              <FaGoogle /> Login with Google
-            </Button>
-          </div>
-          <Button className="hover:text-orange-500" onClick={() => { router.push("/signup") }} variant="link">Don&apos;t have an account? SignUp</Button>
-
-        </CardFooter>
-      </Card>
-
-    </div>
+      </div>
+    </Suspense>
 
 
   );
