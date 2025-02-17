@@ -105,7 +105,7 @@ export default function Signin() {
               <FaGoogle /> Login with Google
             </Button>
           </div>
-          <Button className="hover:text-orange-500" onClick={() => { router.push("/signup") }} variant="link">Don't have an account? SignUp</Button>
+          <Button className="hover:text-orange-500" onClick={() => { router.push("/signup") }} variant="link">Don&apos;t have an account? SignUp</Button>
 
         </CardFooter>
       </Card>
