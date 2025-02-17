@@ -5,10 +5,10 @@ export default function Home() {
     <html>
     <div className="min-h-screen flex items-center justify-center">
 
-    <div className="bg-gray-100 p-8 rounded-lg shadow-lg w-full max-w-md">
+    <div className="bg-white p-20 rounded-lg w-full max-w-md">
       
       <div className="flex justify-center mb-6">
-        <img src="https://placehold.co/100x100" alt="Logo" className="w-24 h-24"></img>
+        <img src="./icons/icon-512x512.png" alt="Logo" className="w-24 h-24"></img>
       </div>
 
       <div className="mb-4">
@@ -31,6 +31,7 @@ export default function Home() {
         />
       </div>
 
+     
 
       <button
         type="submit"
@@ -38,6 +39,11 @@ export default function Home() {
       >
         Login
       </button>
+
+      <div className="w-full py-2 px-3 ">
+        <p className="font-light text-base">Dont have and account ? <a className="text-blue-600" href="#">click</a> </p>
+      </div>
+
     </div>
   </div>
     </html>
