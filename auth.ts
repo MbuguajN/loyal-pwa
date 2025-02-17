@@ -36,7 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }), Google
   ], pages: {
-    signIn: "/signin"
+    signIn: "/signin", newUser: "/new-user"
   }
 })
 
