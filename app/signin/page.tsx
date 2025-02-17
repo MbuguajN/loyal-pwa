@@ -4,7 +4,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { FaGoogle } from "react-icons/fa";
-import { toast, useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { ToastAction } from "@/components/ui/toast";
 import {
   Card,
@@ -17,7 +17,7 @@ import {
 
 export default function Signin() {
   const callBackUrl = useSearchParams().get("callbackUrl");
-
+  const { toast } = useToast()
   const router = useRouter()
   const { data: session, status } = useSession();
   if (status === "authenticated") {
