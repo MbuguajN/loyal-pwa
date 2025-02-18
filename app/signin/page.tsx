@@ -1,7 +1,7 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FaGoogle } from "react-icons/fa";
 import { useToast } from "@/hooks/use-toast"
 import {
@@ -12,14 +12,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Toaster } from "@/components/ui/toaster";
 
 export default function Signin() {
-  //const callBackUrl = useSearchParams().get("callbackUrl");
+  const callBackUrl = useSearchParams().get("callbackUrl");
   const { toast } = useToast()
   const router = useRouter()
+
+  const [password, setPassword] = useState<string>()
+  const [email, setEmail] = useState<string>()
   const { data: session, status } = useSession();
   useEffect(() => {
     if (status === "authenticated") {
@@ -59,6 +62,8 @@ export default function Signin() {
               <div className="mb-2">
                 <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
                 <input
+                  onChange={(e) => { setEmail(e.target.value) }}
+                  value={email}
                   type="email"
                   id="email"
                   placeholder="Enter your email"
@@ -69,6 +74,8 @@ export default function Signin() {
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2">Password</label>
                 <input
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value) }}
                   type="password"
                   id="password"
                   placeholder="Enter your password"
@@ -84,7 +91,26 @@ export default function Signin() {
             <div className="space-y-4 pt-2">
 
               <Button
+                onClick={() => {
+                  if (email && password) {
+                    signIn('credentials', { redirect: false, email: email, password: password }).then(res => {
+                      if (res?.ok) {
+                        console.log({ res })
+                        toast({ variant: 'default', title: "Success", description: "logged in" })
+                        if (callBackUrl) {
 
+                          router.push(callBackUrl as string)
+                        } else {
+                          router.push("/")
+                        }
+
+                      }
+                    })
+                  }
+                  else {
+                    toast({ variant: 'destructive', title: "Error", description: "email or password empty" })
+                  }
+                }}
                 className="w-full bg-orange-400 hover:bg-orange-500"
               >
                 Login

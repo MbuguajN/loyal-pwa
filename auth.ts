@@ -2,10 +2,19 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import NextAuth from "next-auth"
 import { prisma } from "./prisma"
 import Credentials from "next-auth/providers/credentials"
-import { genSaltSync, hashSync } from "bcrypt-ts";
+import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 import Google from "next-auth/providers/google";
-
-
+import { z, ZodError } from 'zod'
+import { User } from "@prisma/client";
+export const signInSchema = z.object({
+  email: z.string({ required_error: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email"),
+  password: z.string({ required_error: "Password is required" })
+    .min(1, "Password is required")
+    .min(8, "Password must be more than 8 characters")
+    .max(32, "Password must be less than 32 characters"),
+})
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -17,22 +26,41 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
       authorize: async (credentials) => {
-        let user = null
 
+
+        let user: User | null = null
+        console.log({ credentials })
         // logic to salt and hash password
-        const pwHash = saltAndHashPassword(credentials.password as string)
+        const parseRes = await signInSchema.safeParseAsync(credentials)
+        if (parseRes.success) {
 
-        // logic to verify if the user exists
-        user = await getUserFromDb(credentials.email as string, pwHash)
 
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // Optionally, this is also the place you could do a user registration
-          throw new Error("Invalid credentials.")
+          // logic to verify if the user exists
+          user = await getUserFromDb(parseRes?.data?.email as string)
+          if (user) {
+            const authorized = compareSync(parseRes?.data?.password, user?.passwordhash as string)
+            console.log({ authorized })
+            if (authorized) {
+              return user
+            } else {
+              user = null;
+              return user
+
+            }
+          }
+          console.log({ user })
+
+          if (!user) {
+            // No user found, so this is their first attempt to login
+            // Optionally, this is also the place you could do a user registration
+            throw new Error("Invalid credentials.")
+          }
+
         }
 
         // return user object with their profile data
         return user
+
       },
     }), Google
   ], pages: {
@@ -40,9 +68,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   }
 })
 
-export async function getUserFromDb(email: string, passHash: string) {
-  const user = await prisma.user.findFirst({ where: { email: email, passwordhash: passHash } });
-  if (user?.email === email && passHash === user?.passwordhash) {
+export async function getUserFromDb(email: string): Promise<User | null> {
+  const user = await prisma.user.findFirst({ where: { email: email } });
+  if (user) {
     return user
   }
   return null
