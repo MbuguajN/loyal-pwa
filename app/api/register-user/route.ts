@@ -1,6 +1,6 @@
 import { saltAndHashPassword, signInSchema } from "@/auth";
 import { prisma } from "@/prisma";
-import { z, ZodError } from "zod";
+import { ZodError } from "zod";
 
 export async function POST(request: Request) {
 	try {
