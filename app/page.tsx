@@ -3,14 +3,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
 
-export default function DashboardPage() {
+export default function HomePage() {
   // In a real application, you would fetch the user's name and avatar URL
   // from your authentication system or API
   const avatarUrl = "/placeholder.svg?height=40&width=40"
 
-  const pathName = usePathname();
   const { data: session, status } = useSession();
 
 
