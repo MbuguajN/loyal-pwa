@@ -72,7 +72,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <Button className="w-full mt-6" onClick={() => console.log("Save changes")}>
+      <Button className="w-20 mt-6" onClick={() => console.log("Save changes")}>
         Save Changes
       </Button>
 
