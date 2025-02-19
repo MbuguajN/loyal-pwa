@@ -30,8 +30,13 @@ export default function ProfilePage() {
   const router = useRouter()
 
   const handleSignOut = async () => {
-    await signOut(); 
-    router.push('/');
+    try {
+      await signOut(); // Ensure signOut is awaited
+      console.log('Sign out successful'); // Debugging: Check if signOut completes
+      router.push('/'); // Redirect to the root URL after signing out
+    } catch (error) {
+      console.error('Error during sign out:', error); // Debugging: Check for errors
+    }
   };
 
   return (
