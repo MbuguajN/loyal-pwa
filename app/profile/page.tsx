@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { LogOut } from "lucide-react"
 import { signOut } from "next-auth/react"
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
   const [username, setUsername] = useState("JohnDoe")
@@ -26,7 +27,12 @@ export default function ProfilePage() {
     }
   }
 
+  const router = useRouter()
 
+  const handleSignOut = async () => {
+    await signOut(); 
+    router.push('/');
+  };
 
   return (
     <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg">
@@ -66,7 +72,7 @@ export default function ProfilePage() {
       </Button>
 
       <div className="mt-8 text-center">
-        <Button variant="outline"  onClick={() => signOut()} className="w-full">
+        <Button variant="outline"  onClick={handleSignOut} className="w-full">
           <LogOut className="mr-2 h-4 w-4" /> Logout
         </Button>
       </div>
