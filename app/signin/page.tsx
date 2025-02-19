@@ -20,7 +20,7 @@ export default function Signin() {
   const callBackUrl = useSearchParams().get("callbackUrl");
   const { toast } = useToast()
   const router = useRouter()
-
+  const [credsLoginLoading, setCredsLoginLoading] = useState(false)
   const [password, setPassword] = useState<string>()
   const [email, setEmail] = useState<string>()
   const { data: session, status } = useSession();
@@ -91,10 +91,13 @@ export default function Signin() {
             <div className="space-y-4 pt-2">
 
               <Button
+                disabled={credsLoginLoading}
                 onClick={() => {
                   if (email && password) {
+                    setCredsLoginLoading(true)
                     signIn('credentials', { redirect: false, email: email, password: password }).then(res => {
                       if (res?.ok) {
+                        setCredsLoginLoading(false)
                         console.log({ res })
                         toast({ variant: 'default', title: "Success", description: "logged in" })
                         if (callBackUrl) {
@@ -113,7 +116,12 @@ export default function Signin() {
                 }}
                 className="w-full bg-orange-400 hover:bg-orange-500"
               >
-                Login
+                {
+                  credsLoginLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : ("login")
+
+                }
               </Button>
               <Button onClick={() => {
                 signIn('google', { redirect: false }).then(data => {
