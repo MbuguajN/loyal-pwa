@@ -23,7 +23,7 @@ const debug =
     ? true
     : false;
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  session: debug ? { strategy: "jwt" } : { strategy: "jwt", maxAge: 30 * 60 },
+  session: debug ? { strategy: "jwt" } : { strategy: "jwt", maxAge: 60 * 60 },
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
