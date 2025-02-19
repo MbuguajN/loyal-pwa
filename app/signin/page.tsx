@@ -33,10 +33,10 @@ export default function Signin() {
         description: "Already Logged In",
       })
 
-      router.back()
+      router.push(callBackUrl as string)
     }
   }, [status])
-
+  console.log({ callBackUrl })
   return (
     <Suspense fallback={
 
@@ -116,9 +116,13 @@ export default function Signin() {
                 Login
               </Button>
               <Button onClick={() => {
-                signIn('google')/*.then(data => {
+                signIn('google', { redirect: false }).then(data => {
                   console.log({ data })
-                  if (data?.error) {
+                  if (!data?.error) {
+
+                    toast({ variant: 'default', title: "Success", description: "logged in" })
+
+                  } else {
                     toast({
                       variant: "destructive",
                       title: "Something went wrong.",
@@ -127,7 +131,7 @@ export default function Signin() {
                     })
 
                   }
-                })*/
+                })
               }} variant="outline" className="w-full border-orange-400 text-orange-400 hover:bg-orange-50">
                 <FaGoogle /> Login with Google
               </Button>

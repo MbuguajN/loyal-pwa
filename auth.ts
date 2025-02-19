@@ -28,7 +28,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       authorize: async (credentials) => {
 
 
-        let user: User | null = null
+        let user = null
         console.log({ credentials })
         // logic to salt and hash password
         const parseRes = await signInSchema.safeParseAsync(credentials)
@@ -37,23 +37,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // logic to verify if the user exists
           user = await getUserFromDb(parseRes?.data?.email as string)
-          if (user) {
-            const authorized = compareSync(parseRes?.data?.password, user?.passwordhash as string)
-            console.log({ authorized })
-            if (authorized) {
-              return user
-            } else {
-              user = null;
-              return user
 
-            }
-          }
-          console.log({ user })
+          const authorized = compareSync(parseRes?.data?.password, user?.passwordhash as string)
 
-          if (!user) {
-            // No user found, so this is their first attempt to login
-            // Optionally, this is also the place you could do a user registration
-            throw new Error("Invalid credentials.")
+          console.log({ authorized })
+          if (user && authorized) {
+            return user
+          } else {
+            return null
           }
 
         }
