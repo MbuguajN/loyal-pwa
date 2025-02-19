@@ -15,7 +15,15 @@ export const signInSchema = z.object({
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
 })
+
+const debug =
+  process.env.NODE_ENV == "development" ||
+    process.env.VERCEL_ENV == "preview" ||
+    process.env.VERCEL_ENV == "development"
+    ? true
+    : false;
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  session: debug ? { strategy: "jwt" } : { strategy: "jwt", maxAge: 30 * 60 },
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
