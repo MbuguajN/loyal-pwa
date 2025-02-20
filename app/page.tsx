@@ -1,8 +1,9 @@
 'use client'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
+//import { Card, CardContent } from "@/components/ui/card"
 import { Loader2 } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
+import LoyaltyDashboard from "@/components/ui/LoyaltyDashboard"
 
 export default function HomePage() {
   // In a real application, you would fetch the user's name and avatar URL
@@ -27,14 +28,7 @@ export default function HomePage() {
 
         {/* Main Content */}
         <main className="flex-1 p-4">
-          <Card className="w-full max-w-md mx-auto mt-8">
-            <CardContent className="pt-6">
-              <h2 className="text-xl font-bold mb-4">Your Dashboard</h2>
-              <p className="text-muted-foreground">
-                You have successfully logged in. Here is your personalized dashboard content.
-              </p>
-            </CardContent>
-          </Card>
+        <LoyaltyDashboard />
         </main>
       </div>
     )
