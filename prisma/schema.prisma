@@ -11,6 +11,7 @@ model User {
         id            String          @id @default(cuid())
         name          String?
         email         String          @unique
+        phoneNumber   String?
         emailVerified DateTime?
         image         String?
         accounts      Account[]
@@ -18,11 +19,14 @@ model User {
         passwordhash  String?
         // Optional for WebAuthn support
         Authenticator Authenticator[]
-
+        role Role @default(user)
         createdAt DateTime @default(now())
         updatedAt DateTime @updatedAt
 }
-
+enum Roles {
+        business
+        user
+}
 model Account {
         userId            String
         type              String

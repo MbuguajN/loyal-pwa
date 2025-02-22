@@ -4,7 +4,7 @@ import { prisma } from "./prisma"
 import Credentials from "next-auth/providers/credentials"
 import { compareSync, genSaltSync, hashSync } from "bcrypt-ts";
 import Google from "next-auth/providers/google";
-import { z, ZodError } from 'zod'
+import { z } from 'zod'
 import { User } from "@prisma/client";
 export const signInSchema = z.object({
   email: z.string({ required_error: "Email is required" })
