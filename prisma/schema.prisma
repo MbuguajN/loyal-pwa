@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
+  id            String             @id @default(cuid())
   name          String?
   email         String          @unique
   phoneNumber   String?
@@ -34,7 +34,7 @@ enum Roles {
 }
 
 model Account {
-  userId            Int
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -56,7 +56,7 @@ model Account {
 
 model Session {
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -75,7 +75,7 @@ model VerificationToken {
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
-  userId               Int
+  userId               String
   providerAccountId    String
   credentialPublicKey  String
   counter              Int
@@ -97,7 +97,7 @@ model Franchise {
 model Store {
   id          Int        @id @default(autoincrement())
   location    String
-  adminId     Int?
+  adminId     String?
   franchiseId Int?
   franchise   Franchise? @relation(fields: [franchiseId], references: [id])
   phoneNumber String
