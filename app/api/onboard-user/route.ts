@@ -1,17 +1,18 @@
 import { prisma } from "@/prisma";
 import { z } from "zod";
-export const businessOnBoardSchema = z.object({
-  franchiseName: z.string({ required_error: "franchise name required" }),
-  email: z.string({ required_error: "user email required" }).email(),
-  phoneNumber: z.string({ required_error: "phone numner required" }),
-  storeLocation: z.string({ required_error: "store location required" }),
-})
-export const memberOnboardingSchema = z.object({
-
-  email: z.string({ required_error: "user email required" }).email(),
-  phoneNumber: z.string({ required_error: "phone number required" })
-})
 export async function POST(request: Request) {
+
+  const businessOnBoardSchema = z.object({
+    franchiseName: z.string({ required_error: "franchise name required" }),
+    email: z.string({ required_error: "user email required" }).email(),
+    phoneNumber: z.string({ required_error: "phone numner required" }),
+    storeLocation: z.string({ required_error: "store location required" }),
+  })
+  const memberOnboardingSchema = z.object({
+
+    email: z.string({ required_error: "user email required" }).email(),
+    phoneNumber: z.string({ required_error: "phone number required" })
+  })
   try {
 
     const data = await request.formData();
