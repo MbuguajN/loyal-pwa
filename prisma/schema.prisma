@@ -8,7 +8,7 @@ generator client {
 }
 
 model User {
-  id            String             @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String?
   email         String          @unique
   phoneNumber   String?
@@ -102,4 +102,5 @@ model Store {
   franchise   Franchise? @relation(fields: [franchiseId], references: [id])
   phoneNumber String
   user        User?      @relation(fields: [adminId], references: [id])
+  image       String?
 }

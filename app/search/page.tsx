@@ -1,9 +1,8 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 //import { Card, CardContent } from "@/components/ui/card"
-import { Loader2 } from "lucide-react";
+import { ChevronRightIcon, Loader2 } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
-import LoyaltyDashboard from "@/components/ui/LoyaltyDashboard";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +13,41 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { Franchise, Store } from "@prisma/client";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+type StoreWithFranchise = Store & { franchise: Franchise }
 
 export default function HomePage() {
   // In a real application, you would fetch the user's name and avatar URL
   // from your authentication system or API
   const avatarUrl = "/placeholder.svg?height=40&width=40";
 
+  const { toast } = useToast();
+  const storesQuery = useQuery({
+    queryKey: ["stores"], queryFn: async () => {
+      try {
+        const req = await fetch("/api/get-stores");
+
+        const data = await req.json() as { stores: StoreWithFranchise[] };
+
+        return data
+      } catch (e) {
+        console.error(e)
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "error occured fetching data",
+        });
+
+      }
+    }
+  })
   const { data: session, status } = useSession();
+
   if (status === "authenticated") {
     console.log({ session });
     return (
@@ -62,7 +89,33 @@ export default function HomePage() {
 
         {/* Main Content */}
         <main className="flex-1 p-4">
-          <LoyaltyDashboard />
+          {storesQuery?.data?.stores.map((store) => (
+            <Link href={`/details/${store.location.toLowerCase().replace(/\s+/g, "-")}`} key={store.id}>
+              <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                <div className="flex flex-col sm:flex-row">
+                  <div className="relative w-full sm:w-1/3 h-48">
+                    <Image
+                      src={store.image || "/placeholder.svg"}
+                      alt={`${store.franchise.name} ${store.location}`}
+                      fill
+                      style={{ objectFit: "cover" }}
+                    />
+                  </div>
+                  <CardContent className="flex-1 p-4">
+                    <h2 className="text-xl font-semibold mb-2">{store.franchise.name}</h2>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">{store.location}</p>
+                    <p className="text-lg font-bold"></p>
+                  </CardContent>
+                  <CardFooter className="p-4 flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+                    <Button variant="ghost" className="text-primary">
+                      Open Details
+                      <ChevronRightIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                  </CardFooter>
+                </div>
+              </Card>
+            </Link>
+          ))}
         </main>
       </div>
     );
