@@ -4,7 +4,7 @@ import { AdminSidebar } from "@/components/admin-sidebar"
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { BellPlus, Loader2, Menu, Search, User } from "lucide-react";
+import { BellPlus, Loader2, Search } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";

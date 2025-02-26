@@ -23,7 +23,7 @@ type StoreWithAdmins = Store & { admins: AdminWithUser[] }
 export default function ManageAdminsPage() {
 
   const { toast } = useToast();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const getStoreAdminsQuery = useQuery({
     queryFn: async () => {
       if (session?.user?.email) {
@@ -82,9 +82,9 @@ export default function ManageAdminsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {getStoreAdminsQuery?.data?.store?.admins?.map((admin, index) => {
+                  {getStoreAdminsQuery?.data?.store?.admins?.map((admin) => {
                     return (
-                      <TableRow>
+                      <TableRow key={admin.id}>
                         <TableCell>{admin?.user?.name}</TableCell>
 
                         <TableCell>{admin?.user?.name}</TableCell>
