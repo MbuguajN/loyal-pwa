@@ -22,8 +22,8 @@ model User {
   role          Roles           @default(member)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-
   Store Store[]
+  Admin Admin?
 }
 
 enum Roles {
@@ -97,10 +97,19 @@ model Franchise {
 model Store {
   id          Int        @id @default(autoincrement())
   location    String
-  adminId     String?
+  ownerId     String?
   franchiseId Int?
   franchise   Franchise? @relation(fields: [franchiseId], references: [id])
   phoneNumber String
-  user        User?      @relation(fields: [adminId], references: [id])
+  user        User?      @relation(fields: [ownerId], references: [id])
   image       String?
+  admins Admin[]
+  verified Boolean @default(false)
+}
+model Admin {
+  id Int @id @default(autoincrement())
+  storeId Int
+  store Store @relation(fields:[storeId],references:[id])
+  userId String @unique
+  user User @relation(fields:[userId],references:[id])
 }
