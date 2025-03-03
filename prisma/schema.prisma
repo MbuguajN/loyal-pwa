@@ -22,7 +22,10 @@ model User {
   role          Roles           @default(member)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
-  Store Store[]
+  Store         Store[]
+  RedeemEvents  RedeemEvent[]
+  AwardEvent    AwardEvent[]
+MemberShip MemberShip[]
   Admin Admin?
 }
 
@@ -95,21 +98,64 @@ model Franchise {
 }
 
 model Store {
-  id          Int        @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   location    String
   ownerId     String?
   franchiseId Int?
-  franchise   Franchise? @relation(fields: [franchiseId], references: [id])
+  franchise   Franchise?    @relation(fields: [franchiseId], references: [id])
   phoneNumber String
-  user        User?      @relation(fields: [ownerId], references: [id])
+  user        User?         @relation(fields: [ownerId], references: [id])
   image       String?
-  admins Admin[]
-  verified Boolean @default(false)
+  admins      Admin[]
+  verified    Boolean       @default(false)
+  Redeemables Redeemables[]
+  RedeemEvent RedeemEvent[]
+  memberships MemberShip[]
+AwardEvent AwardEvent[]
 }
+
+model MemberShip {
+  id       Int    @id @default(autoincrement())
+  memberId String
+  storeId  Int
+  member   User   @relation(fields:[memberId], references: [id])
+  store    Store  @relation(fields: [storeId], references: [id])
+}
+
+model AwardEvent {
+  id             Int    @id @default(autoincrement())
+  points_awarded Int
+  customerId     String
+  storeId        Int
+  store          Store  @relation(fields: [storeId], references: [id])
+  customer       User   @relation(fields: [customerId], references: [id])
+}
+
+model RedeemEvent {
+  id              Int         @id @default(autoincrement())
+  points_consumed Int
+  redeemableId    Int
+  customerId      String
+  storeId         Int
+  store           Store       @relation(fields: [storeId], references: [id])
+  customer        User        @relation(fields: [customerId], references: [id])
+  redeemable      Redeemables @relation(fields: [redeemableId], references: [id])
+}
+
+model Redeemables {
+  id       Int    @id @default(autoincrement())
+  name     String
+  point    Int
+  store_id Int
+  store    Store  @relation(fields: [store_id], references: [id])
+RedeemEvent RedeemEvent[]
+}
+
 model Admin {
-  id Int @id @default(autoincrement())
+  id      Int    @id @default(autoincrement())
   storeId Int
-  store Store @relation(fields:[storeId],references:[id])
-  userId String @unique
-  user User @relation(fields:[userId],references:[id])
+  store   Store  @relation(fields: [storeId], references: [id])
+  userId  String @unique
+  user    User   @relation(fields: [userId], references: [id])
 }
+
