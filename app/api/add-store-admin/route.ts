@@ -1,8 +1,8 @@
-import { addStoreAdminSchema } from "@/auth";
+import { addStoreAdminSchema } from "@/lib/utils";
 import { prisma } from "@/prisma";
-import { z } from "zod";
 
 export async function POST(request: Request) {
+ 
   const formData = await request.formData();
   const email = formData.get("email")?.toString();
   const storeId = formData.get("storeId")?.toString();
