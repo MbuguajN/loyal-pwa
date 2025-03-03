@@ -47,7 +47,7 @@ const LoyaltyDashboard = () => {
             <Link href={`/details/${place.name.toLowerCase().replace(/\s+/g, "-")}`} key={place.name}>
               <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                 <div className="flex flex-col sm:flex-row">
-                  <div className="relative w-full sm:w-1/3 h-48">
+                  <div className="relative w-full sm:w-1/3 h-40">
                     <Image
                       src={place.image || "/placeholder.svg"}
                       alt={place.name}
