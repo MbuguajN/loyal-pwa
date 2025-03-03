@@ -8,11 +8,24 @@ import { BellPlus, Loader2, Search } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import UnauthorizedAlert from "@/components/unauthorized-alert";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 
   const { data: session, status } = useSession();
+  const isAdminQuery = useQuery({
+    queryFn: async () => {
+      if (session?.user?.email) {
+        const formData = new FormData()
+        formData.append("email", session?.user?.email as string)
+        const req = await fetch('/api/is-admin', { method: "POST", body: formData })
+        const data = await req.json() as { isAdmin: string; role: string }
+        return data
+      }
+    }, queryKey: ["isAdmin"]
+  })
 
-  if (status === "authenticated") {
+  if (status === "authenticated" && isAdminQuery?.isFetched && isAdminQuery?.data?.isAdmin) {
     return (
       <SidebarProvider>
         <AdminSidebar />
@@ -89,5 +102,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
   if (status === "unauthenticated") {
     signIn(undefined, { redirect: false, redirectTo: "/admin" });
+  }
+  if (!isAdminQuery?.data?.isAdmin && isAdminQuery?.isFetched) {
+    return (
+      <UnauthorizedAlert
+        title="Access Denied"
+        description="You are not authorized to view this content. Please sign in with appropriate credentials to continue."
+        redirectPath="/signin"
+        redirectLabel="Go to Login"
+      />
+    )
   }
 }

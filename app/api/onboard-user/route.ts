@@ -58,7 +58,7 @@ export async function POST(request: Request) {
         }
       } else {
         console.log({ parseRes });
-        return new Response("error parsing details", { status: 500 });
+        return new Response("error parsing details", { status: 400 });
       }
     } else {
       const parseRes = await memberOnboardingSchema.safeParseAsync({
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
           return new Response("no user found", { status: 500 });
         }
       } else {
-        return new Response("error parsing details", { status: 500 });
+        return new Response("error parsing details", { status: 400 });
       }
     }
   } catch (e) {

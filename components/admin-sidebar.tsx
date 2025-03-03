@@ -14,7 +14,7 @@ import Link from "next/link"
 const items = [
 	{
 		title: "Rewards",
-		url: "#",
+		url: "/admin/rewards",
 		icon: Gift,
 	},
 	{

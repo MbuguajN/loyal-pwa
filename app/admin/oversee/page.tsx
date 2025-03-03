@@ -1,10 +1,9 @@
 'use client'
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useSession } from "next-auth/react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -14,16 +13,65 @@ import {
 import { Store, Admin, User, Franchise } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import Link from "next/link";
-import { PlusCircle } from "lucide-react";
+import { MoreHorizontal, Pencil, PlusCircle, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import { addStoreAdminSchema } from "@/app/api/add-store-admin/route";
+import { DropdownMenuTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 type AdminWithUser = Admin & { user: User }
 type StoreWithAdmins = Store & { admins: AdminWithUser[] }
 export default function ManageAdminsPage() {
 
   const { toast } = useToast();
   const { data: session } = useSession();
+  const [adminEmail, setAdminEmail] = useState<string>()
+
+  const addStoreAdminMutation = useMutation({
+    mutationFn: async () => {
+      try {
+        const formData = new FormData();
+        const parseRes = addStoreAdminSchema?.safeParse({ email: adminEmail, storeId: getStoreAdminsQuery?.data?.store?.id.toString() })
+        if (parseRes?.success) {
+          formData.append('email', parseRes?.data?.email)
+          formData.append('storeId', parseRes?.data?.storeId)
+          const req = await fetch("/api/add-store-admin", { method: "POST", body: formData })
+          const data = await req.json() as { status: string }
+          if (data.status == "admin sucessfully created") {
+            toast({ title: "Success", description: "Admin sucessfully created" })
+
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "error creating admin",
+            });
+          }
+        }
+      }
+      catch (e) {
+        console.error(e)
+
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "an error occured in the submission chain",
+        });
+      }
+    }, mutationKey: ["addStoreAdmin"]
+  })
   const getStoreAdminsQuery = useQuery({
     queryFn: async () => {
       if (session?.user?.email) {
@@ -56,12 +104,38 @@ export default function ManageAdminsPage() {
             <h1 className="text-3xl font-bold tracking-tight">Administrators</h1>
             <p className="text-muted-foreground">Manage {getStoreAdminsQuery?.data?.store?.franchise?.name} {getStoreAdminsQuery?.data?.store?.location} admins </p>
           </div>
-          <Button asChild>
-            <Link href="/dashboard/admins/new">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Admin
-            </Link>
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Admin
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Add Admin </DialogTitle>
+                <DialogDescription>
+                  Admin will manage {getStoreAdminsQuery?.data?.store?.franchise?.name} {getStoreAdminsQuery?.data?.store?.location}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Admin email
+                  </Label>
+                  <Input id="name" onChange={(e) => { setAdminEmail(e.target.value) }} value={adminEmail} className="col-span-3" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button disabled={addStoreAdminMutation?.isLoading} type="submit" onClick={() => { addStoreAdminMutation?.mutate() }}>{addStoreAdminMutation.isLoading ? "Creating" : "Create"}</Button>
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
         <Card>
           <CardHeader>
@@ -73,11 +147,9 @@ export default function ManageAdminsPage() {
               <Skeleton className="h-full w-full rounded-xl" />
             ) : (
               <Table>
-                <TableCaption>Admins</TableCaption>
                 <TableHeader>
                   <TableRow>
                     <TableHead>Name</TableHead>
-
                     <TableHead>Email</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -87,7 +159,29 @@ export default function ManageAdminsPage() {
                       <TableRow key={admin.id}>
                         <TableCell>{admin?.user?.name}</TableCell>
 
-                        <TableCell>{admin?.user?.name}</TableCell>
+                        <TableCell>{admin?.user?.email}</TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Open menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>
+                                <Pencil className="mr-2 h-4 w-4" />
+                                Edit
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
                       </TableRow>
 
                     )
@@ -104,3 +198,4 @@ export default function ManageAdminsPage() {
       </div></div>
   )
 }
+
