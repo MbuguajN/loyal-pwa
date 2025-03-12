@@ -8,7 +8,6 @@ export async function POST(request: Request) {
       where: { id: Number(id) },
       include: { Redeemables: true, franchise: true },
     });
-    storeWithRedeemables?.Redeemables;
     return Response.json({ storeWithRedeemables });
   } catch (e) {
     console.error(e);
