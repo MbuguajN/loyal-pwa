@@ -10,8 +10,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import UnauthorizedAlert from "@/components/unauthorized-alert";
+import { useAtom } from "jotai";
+import { isAdminAtomInst } from "@/lib/utils";
+import { Store } from "@prisma/client";
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-
+  const [isAdminAtom, setIsAdminAtom] = useAtom(isAdminAtomInst)
   const { data: session, status } = useSession();
   const isAdminQuery = useQuery({
     queryFn: async () => {
@@ -19,12 +22,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         const formData = new FormData()
         formData.append("email", session?.user?.email as string)
         const req = await fetch('/api/is-admin', { method: "POST", body: formData })
-        const data = await req.json() as { isAdmin: string; role: string }
+        const data = await req.json() as {
+          isAdmin: boolean;
+          isBusiness: boolean;
+          ownedStore: Store;
+          adminManagedStoreId: number;
+        }
+        setIsAdminAtom(data)
         return data
       }
     }, queryKey: ["isAdmin"]
   })
-
+  console.log({ isAdminAtom })
   if (status === "authenticated" && isAdminQuery?.isFetched && isAdminQuery?.data?.isAdmin) {
     return (
       <SidebarProvider>

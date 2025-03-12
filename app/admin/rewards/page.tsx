@@ -1,6 +1,5 @@
 'use client'
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query"
-import { useSession } from "next-auth/react";
 import {
   Table,
   TableBody,
@@ -10,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Store, Admin, User, Franchise, Redeemables } from "@prisma/client";
+import { Store, Franchise, Redeemables } from "@prisma/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { MoreHorizontal, Pencil, PlusCircle, Trash2 } from "lucide-react";
@@ -30,62 +29,83 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react";
 import { DropdownMenuTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { isAdminAtomInst } from "@/lib/utils";
+import { useAtom } from "jotai";
 
 export default function ManageRewards() {
+  const [isAdminAtom] = useAtom(isAdminAtomInst)
   const [redeemableTitle, setRedeemableTitle] = useState<string>()
   const [redeemablePointPerUnit, setredeemablePointPerUnit] = useState<string>()
   const queryClient = new QueryClient()
   const { toast } = useToast();
 
-  const { data: session } = useSession();
-  const getAdminStores = useQuery({
-    queryFn: async () => {
-      if (session?.user?.email) {
-
-        const formData = new FormData()
-        formData.append("email", session?.user?.email)
-        const req = await fetch("/api/get-admin-stores", { method: "POST", body: formData })
-        const data = await req.json() as { id: number }
-        return data
-      } else {
-      }
-    }, queryKey: ["adminStores"]
-  })
+  //const getAdminStores = useQuery({
+  //  queryFn: async () => {
+  //    if (session?.user?.email) {
+  //
+  //      const formData = new FormData()
+  //      formData.append("email", session?.user?.email)
+  //      const req = await fetch("/api/get-admin-stores", { method: "POST", body: formData })
+  //      const data = await req.json() as { id: number }
+  //      return data
+  //    } else {
+  //    }
+  //  }, queryKey: ["adminStores"]
+  //})
   const addRedeemableMutation = useMutation({
     mutationFn: async () => {
-      const formData = new FormData()
-      if (redeemablePointPerUnit && redeemableTitle && getAdminStores?.data?.id) {
+      try {
+        const formData = new FormData()
+        if (redeemablePointPerUnit && redeemableTitle && isAdminAtom) {
 
-        formData.append("redeemableTitle", redeemableTitle)
-        formData.append("redeemablePointPerUnit", redeemablePointPerUnit)
-        formData.append("storeId", getAdminStores?.data?.id?.toString())
-        const req = await fetch("/api/add-store-redeemable", { method: "POST", body: formData })
-        const data = await req.json() as { status: string }
-        if (data.status === "success") {
-          toast({
-            variant: "default",
-            title: "Error",
-            description: "Store redeemables created",
-          });
-          queryClient.invalidateQueries(["storeRedeemables"])
+          formData.append("redeemableTitle", redeemableTitle)
+          formData.append("redeemablePointPerUnit", redeemablePointPerUnit)
+          formData.append("storeId", isAdminAtom?.adminManagedStoreId?.toString())
+          const req = await fetch("/api/add-store-redeemables", { method: "POST", body: formData })
+          const data = await req.json() as { status: string }
+          if (data.status === "success") {
+            setRedeemableTitle(undefined)
+            setredeemablePointPerUnit(undefined)
+            toast({
+              variant: "default",
+              title: "Success",
+              description: "Store redeemables created",
+            });
+            queryClient.invalidateQueries(["storeRedeemables"])
 
+          } else {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Error Creating store Redeemables",
+            });
+          }
         } else {
+
           toast({
             variant: "destructive",
             title: "Error",
-            description: "Error Creating store Redeemables",
+            description: "Some Submission details are missing",
           });
         }
+      } catch (e) {
+        console.error(e)
+
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Error Adding store Redeemables",
+        });
       }
     }, mutationKey: ["addRedeemable"]
   })
   const getStoreRedeemablesQuery = useQuery({
     queryFn: async () => {
       try {
-        if (getAdminStores?.data?.id) {
+        if (isAdminAtom) {
 
           const formData = new FormData()
-          formData.append("storeId", getAdminStores?.data?.id.toString())
+          formData.append("storeId", isAdminAtom?.adminManagedStoreId?.toString())
           const req = await fetch('/api/get-store-redeemables', { method: 'POST', body: formData })
           const data = await req.json() as { storeWithRedeemables: Store & { Redeemables: Redeemables[], franchise: Franchise } }
           return data
