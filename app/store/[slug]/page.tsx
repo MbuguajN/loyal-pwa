@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Award, Gift, MapPin, Phone, ShoppingBag, Star, Store as StoreIcon, Users } from "lucide-react"
+import { Award, Gift, MapPin, Phone, ShoppingBag, Store as StoreIcon, Users } from "lucide-react"
 import Image from "next/image"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
@@ -17,6 +17,7 @@ export default function StorePage() {
 
 	const { toast } = useToast();
 	const { data: session, status } = useSession();
+	console.log(status)
 	const getStore = useQuery({
 		queryFn: async () => {
 			const formData = new FormData()
