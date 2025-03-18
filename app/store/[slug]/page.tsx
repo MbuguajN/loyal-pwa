@@ -221,8 +221,8 @@ export default function StorePage() {
 							</div>
 							<h2 className="text-3xl font-bold tracking-tight">Become a Member</h2>
 							<p className="text-muted-foreground">
-								Sign up for our loyalty program today and start earning points with every purchase. It's free to join
-								and you'll get immediate access to exclusive benefits.
+								Sign up for our loyalty program today and start earning points with every purchase. It&apos;s free to join
+								and you&apos;ll get immediate access to exclusive benefits.
 							</p>
 							<ul className="space-y-2">
 								{[
