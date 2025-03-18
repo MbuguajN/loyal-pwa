@@ -26,7 +26,7 @@ type StoreWithFranchise = Store & { franchise: Franchise }
 export default function HomePage() {
   // In a real application, you would fetch the user's name and avatar URL
   // from your authentication system or API
- // const avatarUrl = "/placeholder.svg?height=40&width=40";
+  // const avatarUrl = "/placeholder.svg?height=40&width=40";
 
   const { toast } = useToast();
   const storesQuery = useQuery({
@@ -57,62 +57,62 @@ export default function HomePage() {
         {/* Top Bar */}
 
         <header className="sticky top-0 z-30 flex h-20 items-center gap-4 border-b bg-background w-screen px-4 sm:px-6">
-            
 
 
 
-            <div className="flex w-full items-center gap-2 md:ml-auto md:gap-4">
-              <form className="flex-1 md:flex-initial">
-                <div className="relative">
-                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="search"
-                    placeholder="Search..."
-                    className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+
+          <div className="flex w-full items-center gap-2 md:ml-auto md:gap-4">
+            <form className="flex-1 md:flex-initial">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search..."
+                  className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                />
+              </div>
+            </form>
+
+            <Button variant="ghost" size="icon" className="text-muted-foreground">
+              <BellPlus className="h-5 w-5" />
+              <span className="sr-only">Notifications</span>
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar className="w-10 h-10">
+                  <AvatarImage
+                    src={session?.user?.image ?? ""}
+                    alt={session?.user?.name ?? "user"}
                   />
-                </div>
-              </form>
+                  <AvatarFallback>
+                    {session?.user?.name?.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <Link href="/profile">
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem
+                  onClick={() => {
+                    signOut();
+                  }}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              <Button variant="ghost" size="icon" className="text-muted-foreground">
-                <BellPlus className="h-5 w-5" />
-                <span className="sr-only">Notifications</span>
-              </Button>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Avatar className="w-10 h-10">
-                    <AvatarImage
-                      src={session?.user?.image ?? ""}
-                      alt={session?.user?.name ?? "user"}
-                    />
-                    <AvatarFallback>
-                      {session?.user?.name?.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <Link href="/profile">
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      signOut();
-                    }}
-                  >
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-            </div>
-          </header>
+          </div>
+        </header>
 
         {/* Main Content */}
         <main className="flex-1 p-4">
           {storesQuery?.data?.stores.map((store) => (
-            <Link href={`/details/${store.location.toLowerCase().replace(/\s+/g, "-")}`} key={store.id}>
+            <Link href={`/store/${store.id}`} key={store.id}>
               <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300 cursor-pointer">
                 <div className="flex flex-col sm:flex-row">
                   <div className="relative w-full sm:w-1/3 h-48">

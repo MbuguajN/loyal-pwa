@@ -135,6 +135,12 @@ export default function Signin() {
                                   });
                                   router.push('/')
                                 }
+                                else if (res?.status === "Already member of the store") {
+                                  toast({
+                                    variant: "default",
+                                    description: "Already member of the store",
+                                  });
+                                }
                               })
                             } else {
                               toast({
