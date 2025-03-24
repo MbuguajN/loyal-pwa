@@ -144,26 +144,3 @@ export default function HomePage() {
     signIn(undefined, { redirect: false, redirectTo: "/" });
   }
 }
-const popularStores = [
-  {
-    id: 1,
-    name: "Urban Outfitters",
-    category: "Fashion & Apparel",
-    description: "Earn 1 point for every $1 spent. Get $5 reward for every 100 points.",
-    icon: <Tag className="h-5 w-5" />,
-  },
-  {
-    id: 2,
-    name: "Healthy Harvest",
-    category: "Grocery & Food",
-    description: "5% discount on all organic products and exclusive member-only deals.",
-    icon: <Tag className="h-5 w-5" />,
-  },
-  {
-    id: 3,
-    name: "Tech Universe",
-    category: "Electronics",
-    description: "Double points on accessories and priority access to new releases.",
-    icon: <Tag className="h-5 w-5" />,
-  },
-]
