@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 //import { Card, CardContent } from "@/components/ui/card"
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
-import { BadgePercent, BellPlus, Loader2, Search, Store, Tag } from "lucide-react";
+import { BadgePercent, BellPlus, Loader2, Search, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
