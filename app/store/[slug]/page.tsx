@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Award, Gift, MapPin, Phone, ShoppingBag, Store as StoreIcon, Users } from "lucide-react"
+import { Award, Gift, Loader2, MapPin, Phone, ShoppingBag, Store as StoreIcon, Users } from "lucide-react"
 import Image from "next/image"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useParams } from "next/navigation"
@@ -44,10 +44,13 @@ export default function StorePage() {
 						description: "Membership processed",
 					});
 
-				} else {
+				} else if (data.status === "Already member of the store") {
+					toast({ variant: "default", description: "you are already a member of the store" })
+				}
+				else {
 					toast({
 						variant: "destructive",
-						title: "Success",
+						title: "Error",
 						description: "Error processing Membership",
 					});
 
@@ -260,9 +263,13 @@ export default function StorePage() {
 							<CardContent>
 							</CardContent>
 							<CardFooter>
-								<Button onClick={() => {
+
+								<Button className="w-full" disabled={jointStoreLp.isLoading} onClick={() => {
 									jointStoreLp.mutateAsync()
-								}} className="w-full">Join Loyalty Program</Button>
+								}}>
+									{jointStoreLp.isLoading && <Loader2 className="animate-spin" />}
+									{jointStoreLp?.isLoading ? ("Please wait") : ("Join Loyalty Program")}
+								</Button>
 							</CardFooter>
 						</Card>
 					</div>
