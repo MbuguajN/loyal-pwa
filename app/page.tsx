@@ -5,7 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { Input } from "@/components/ui/input";
 import { BadgePercent, BellPlus, Loader2, Search, Store, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import {
@@ -22,7 +22,7 @@ import { useState } from "react";
 export default function HomePage() {
 
   //const avatarUrl = "/placeholder.svg?height=40&width=40";
-  const [searchQuery, setSearchQuery] = useState("")
+  //const [searchQuery, setSearchQuery] = useState("")
 
   const { data: session, status } = useSession();
   if (status === "authenticated") {
