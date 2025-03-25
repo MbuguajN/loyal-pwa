@@ -203,11 +203,6 @@ export default function StorePage() {
 											<span className="text-sm font-bold">{item.point.toLocaleString()} points</span>
 										</div>
 									</CardContent>
-									<CardFooter className="p-4 pt-0">
-										<Button variant="outline" size="sm" className="w-full">
-											Redeem
-										</Button>
-									</CardFooter>
 								</Card>
 							))}
 						</div>

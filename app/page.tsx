@@ -18,13 +18,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { Store as StoreT, MemberShip, User } from "@prisma/client";
+import BankCardFront from "@/components/bank-front";
 //import { useState } from "react";
 export default function HomePage() {
 
   //const avatarUrl = "/placeholder.svg?height=40&width=40";
   //const [searchQuery, setSearchQuery] = useState("")
-
   const { data: session, status } = useSession();
+
+  const getMemberShips = useQuery({
+    queryFn: async () => {
+      if (session?.user?.email) {
+        const formData = new FormData();
+        formData.append("email", session?.user?.email)
+        const req = await fetch("/api/get-user-memberships", { body: formData, method: "POST" })
+        const data = await req.json() as { memberShips: Array<MemberShip & { store: StoreT, member: User }> }
+        console.log({ data })
+        return data
+
+
+      }
+    }, queryKey: [session?.user?.email]
+  })
   if (status === "authenticated") {
     console.log({ session });
     return (
@@ -100,25 +117,33 @@ export default function HomePage() {
                 <TabsTrigger value="my-programs">My Programs</TabsTrigger>
               </TabsList>
               <TabsContent value="my-programs" className="mt-6">
-                <Card className="border-dashed">
-                  <CardHeader className="flex flex-col items-center">
-                    <div className="rounded-full bg-muted p-6 mb-4">
-                      <Store className="h-10 w-10 text-muted-foreground" />
-                    </div>
-                    <CardTitle>No Loyalty Programs Yet</CardTitle>
-                    <CardDescription className="text-center max-w-md mx-auto">
-                      You haven&apos;t joined any store loyalty programs. Join programs to start earning rewards and discounts
-                      on your purchases.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex justify-center">
-                    <Button asChild>
-                      <Link href="/search" onClick={() => document.getElementById("discover-tab")?.click()}>
-                        Discover Programs
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+                {getMemberShips?.data?.memberShips?.length ?? 0 > 0 ? getMemberShips?.data?.memberShips?.map((membership) => {
+                  return (
+                    <BankCardFront key={membership?.id} storeId={membership?.storeId} storeName={membership?.store.location} holderName={membership?.member?.name ?? ""} points={membership?.points} />
+                  )
+                }) : (
+                  <Card className="border-dashed">
+                    <CardHeader className="flex flex-col items-center">
+                      <div className="rounded-full bg-muted p-6 mb-4">
+                        <Store className="h-10 w-10 text-muted-foreground" />
+                      </div>
+                      <CardTitle>No Loyalty Programs Yet</CardTitle>
+                      <CardDescription className="text-center max-w-md mx-auto">
+                        You haven&apos;t joined any store loyalty programs. Join programs to start earning rewards and discounts
+                        on your purchases.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex justify-center">
+                      <Button asChild>
+                        <Link href="/search" onClick={() => document.getElementById("discover-tab")?.click()}>
+                          Discover Programs
+                        </Link>
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+
+                )}
               </TabsContent>
 
             </Tabs>

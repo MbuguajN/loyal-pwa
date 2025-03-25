@@ -23,10 +23,10 @@ model User {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   Store         Store[]
-  RedeemEvents  RedeemEvent[]
+  MemberShip    MemberShip[]
+  Admin         Admin?
   AwardEvent    AwardEvent[]
-MemberShip MemberShip[]
-  Admin Admin?
+  RedeemEvent   RedeemEvent[]
 }
 
 enum Roles {
@@ -111,24 +111,31 @@ model Store {
   Redeemables Redeemables[]
   RedeemEvent RedeemEvent[]
   memberships MemberShip[]
-AwardEvent AwardEvent[]
+  AwardEvent  AwardEvent[]
 }
 
 model MemberShip {
-  id       Int    @id @default(autoincrement())
-  memberId String
-  storeId  Int
-  member   User   @relation(fields:[memberId], references: [id])
-  store    Store  @relation(fields: [storeId], references: [id])
+  id           Int           @id @default(autoincrement())
+  memberId     String
+  storeId      Int
+  member       User          @relation(fields: [memberId], references: [id])
+  store        Store         @relation(fields: [storeId], references: [id])
+  RedeemEvents RedeemEvent[]
+  AwardEvent   AwardEvent[]
+  points Int @default(0)
 }
 
 model AwardEvent {
-  id             Int    @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   points_awarded Int
   customerId     String
   storeId        Int
-  store          Store  @relation(fields: [storeId], references: [id])
-  customer       User   @relation(fields: [customerId], references: [id])
+  store          Store       @relation(fields: [storeId], references: [id])
+  customer       User        @relation(fields: [customerId], references: [id])
+  MemberShip     MemberShip? @relation(fields: [memberShipId], references: [id])
+  memberShipId   Int?
+  createdAt             DateTime?       @default(now())
+  updatedAt             DateTime?       @updatedAt
 }
 
 model RedeemEvent {
@@ -140,15 +147,21 @@ model RedeemEvent {
   store           Store       @relation(fields: [storeId], references: [id])
   customer        User        @relation(fields: [customerId], references: [id])
   redeemable      Redeemables @relation(fields: [redeemableId], references: [id])
+  MemberShip      MemberShip? @relation(fields: [memberShipId], references: [id])
+  memberShipId    Int?
+
+  createdAt             DateTime?       @default(now())
+  updatedAt             DateTime?       @updatedAt
+
 }
 
 model Redeemables {
-  id       Int    @id @default(autoincrement())
-  name     String
-  point    Int
-  store_id Int
-  store    Store  @relation(fields: [store_id], references: [id])
-RedeemEvent RedeemEvent[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  point       Int
+  store_id    Int
+  store       Store         @relation(fields: [store_id], references: [id])
+  RedeemEvent RedeemEvent[]
 }
 
 model Admin {
@@ -158,4 +171,3 @@ model Admin {
   userId  String @unique
   user    User   @relation(fields: [userId], references: [id])
 }
-

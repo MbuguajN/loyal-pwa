@@ -1,11 +1,11 @@
+
 import Link from "next/link"
-import { Home, Map, HandCoins, User } from "lucide-react"
+import { Home, Map, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 const navItems = [
   { icon: Home, href: "/" },
   { icon: Map, href: "/search" },
-  { icon: HandCoins, href: "/notifications" },
   { icon: User, href: "/profile" },
 ]
 
