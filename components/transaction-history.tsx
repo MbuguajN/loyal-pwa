@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { CenteredLoading } from "./centered-loading"
+import { useRouter } from "next/navigation"
 
 
 // Mock data for transaction history
@@ -32,6 +33,7 @@ export function TransactionHistory({ storeId, customerId, membershipId }: { memb
 
 	const queryClient = new QueryClient()
 	const { toast } = useToast();
+	const router = useRouter()
 	const [units, setUnits] = useState<string | undefined>(undefined)
 	const rules = [
 		"You recieve 20 points with your first purchase",
@@ -59,6 +61,8 @@ export function TransactionHistory({ storeId, customerId, membershipId }: { memb
 						});
 
 						queryClient.invalidateQueries([`transactions-${customerId}`])
+						router.refresh()
+
 
 					} else {
 						toast({
