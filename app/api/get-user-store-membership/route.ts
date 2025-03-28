@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const storeId = formData.get("storeId")?.toString();
     if (email && storeId) {
       const user = await prisma.user.findUnique({ where: { email } });
-      const memberShips = await prisma.memberShip.findFirst({
+      const memberShip = await prisma.memberShip.findFirst({
         where: { memberId: user?.id, storeId: Number(storeId) },
         include: {
           store: true,
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
           RedeemEvents: true,
         },
       });
-      return Response.json({ memberShips });
+      return Response.json({ memberShip });
     } else {
       return new Response("No email or store id provided", { status: 400 });
     }

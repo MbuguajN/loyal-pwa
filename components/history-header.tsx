@@ -18,7 +18,7 @@ export function HistoryHeader() {
 				</Button>
 				<h1 className="text-2xl font-bold tracking-tight">Points History</h1>
 			</div>
-			<p className="text-muted-foreground">View your points earning and redemption history</p>
+			<p className="text-muted-foreground">View your points earning, redemption history and redeem points</p>
 		</div>
 	)
 }

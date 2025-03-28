@@ -259,7 +259,7 @@ export default function StorePage() {
 							</CardContent>
 							<CardFooter>
 
-								<Button className="w-full" disabled={jointStoreLp.isLoading} onClick={() => {
+								<Button disabled={jointStoreLp.isLoading} onClick={() => {
 									jointStoreLp.mutateAsync()
 								}}>
 									{jointStoreLp.isLoading && <Loader2 className="animate-spin" />}

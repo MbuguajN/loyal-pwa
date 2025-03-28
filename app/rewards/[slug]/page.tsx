@@ -3,6 +3,7 @@ import { CenteredLoading } from "@/components/centered-loading"
 import { HistoryHeader } from "@/components/history-header"
 import { PointsSummary } from "@/components/points-summary"
 import { TransactionHistory } from "@/components/transaction-history"
+import { Toaster } from "@/components/ui/toaster"
 import { AwardEvent, MemberShip, Store, User, RedeemEvent } from "@prisma/client"
 import { useQuery } from "@tanstack/react-query"
 import { useSession } from "next-auth/react"
@@ -39,13 +40,15 @@ export default function PointsHistoryPage() {
 		console.log({ storeId: getMemberShips?.data?.memberShip?.storeId, customerId: getMemberShips?.data?.memberShip?.memberId })
 		return (
 			<div className="container mx-auto py-8 px-4 md:px-6">
+
+				<Toaster />
 				<HistoryHeader />
 				<div className="grid gap-6 md:grid-cols-4 mt-6">
 					<div className="md:col-span-1">
 						<PointsSummary totalPoints={getMemberShips?.data?.memberShip?.points ?? 0} />
 					</div>
 					<div className="md:col-span-3">
-						<TransactionHistory storeId={getMemberShips?.data?.memberShip?.storeId} customerId={getMemberShips?.data?.memberShip?.memberId} />
+						<TransactionHistory membershipId={getMemberShips?.data?.memberShip?.id} storeId={getMemberShips?.data?.memberShip?.storeId} customerId={getMemberShips?.data?.memberShip?.memberId} />
 					</div>
 				</div>
 			</div>
