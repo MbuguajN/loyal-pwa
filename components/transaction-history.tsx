@@ -22,7 +22,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { CenteredLoading } from "./centered-loading"
-import { useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 
 
@@ -35,7 +34,6 @@ export function TransactionHistory({ storeId, customerId, membershipId }: { memb
 	const { data: session } = useSession();
 	const queryClient = new QueryClient()
 	const { toast } = useToast();
-	const router = useRouter()
 	const [units, setUnits] = useState<string | undefined>(undefined)
 	const rules = [
 		"You recieve 20 points with your first purchase",
