@@ -23,6 +23,7 @@ import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { CenteredLoading } from "./centered-loading"
 import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 
 // Mock data for transaction history
@@ -31,6 +32,7 @@ export function TransactionHistory({ storeId, customerId, membershipId }: { memb
 	const [sortOrder, setSortOrder] = useState("newest")
 	const [redeemableId, setRedeemableId] = useState<number | undefined>(undefined)
 
+	const { data: session } = useSession();
 	const queryClient = new QueryClient()
 	const { toast } = useToast();
 	const router = useRouter()
@@ -61,7 +63,7 @@ export function TransactionHistory({ storeId, customerId, membershipId }: { memb
 						});
 
 						queryClient.invalidateQueries([`transactions-${customerId}`])
-						router.refresh()
+
 
 
 					} else {
@@ -104,7 +106,7 @@ export function TransactionHistory({ storeId, customerId, membershipId }: { memb
 
 
 			}
-		}, queryKey: [`transactions-${customerId}`]
+		}, queryKey: [`transactions-${customerId}`, session?.user?.email]
 	})
 	const getStore = useQuery({
 		queryFn: async () => {

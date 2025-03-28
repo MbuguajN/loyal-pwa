@@ -21,6 +21,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Store as StoreT, MemberShip, User } from "@prisma/client";
 import BankCardFront from "@/components/bank-front";
+import { CenteredLoading } from "@/components/centered-loading";
 //import { useState } from "react";
 export default function HomePage() {
 
@@ -42,6 +43,11 @@ export default function HomePage() {
       }
     }, queryKey: [session?.user?.email]
   })
+  if (getMemberShips?.isLoading) {
+    return (
+      <CenteredLoading />
+    )
+  }
   if (status === "authenticated") {
     console.log({ session });
     return (
