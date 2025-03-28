@@ -5,6 +5,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const customerId = formData.get("customerId")?.toString();
     const storeId = formData.get("storeId")?.toString();
+    console.log({ customerId, storeId });
     if (customerId && storeId) {
       const redeemEvents = await prisma.redeemEvent.findMany({
         where: { customerId: customerId, storeId: Number(storeId) },

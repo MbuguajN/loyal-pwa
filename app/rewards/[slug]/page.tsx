@@ -1,4 +1,5 @@
 "use client"
+import { CenteredLoading } from "@/components/centered-loading"
 import { HistoryHeader } from "@/components/history-header"
 import { PointsSummary } from "@/components/points-summary"
 import { TransactionHistory } from "@/components/transaction-history"
@@ -32,18 +33,29 @@ export default function PointsHistoryPage() {
 			}
 		}, queryKey: [session?.user?.email]
 	})
-	return (
-		<div className="container mx-auto py-8 px-4 md:px-6">
-			<HistoryHeader />
-			<div className="grid gap-6 md:grid-cols-4 mt-6">
-				<div className="md:col-span-1">
-					<PointsSummary totalPoints={getMemberShips?.data?.memberShip?.points ?? 0} />
-				</div>
-				<div className="md:col-span-3">
-					<TransactionHistory storeId={getMemberShips?.data?.memberShip?.storeId} customerId={getMemberShips?.data?.memberShip?.memberId} />
+
+	if (!getMemberShips?.isLoading && getMemberShips?.isFetched) {
+
+		console.log({ storeId: getMemberShips?.data?.memberShip?.storeId, customerId: getMemberShips?.data?.memberShip?.memberId })
+		return (
+			<div className="container mx-auto py-8 px-4 md:px-6">
+				<HistoryHeader />
+				<div className="grid gap-6 md:grid-cols-4 mt-6">
+					<div className="md:col-span-1">
+						<PointsSummary totalPoints={getMemberShips?.data?.memberShip?.points ?? 0} />
+					</div>
+					<div className="md:col-span-3">
+						<TransactionHistory storeId={getMemberShips?.data?.memberShip?.storeId} customerId={getMemberShips?.data?.memberShip?.memberId} />
+					</div>
 				</div>
 			</div>
-		</div>
-	)
+		)
+
+	}
+	else {
+		return (
+			<CenteredLoading />
+		)
+	}
 }
 

@@ -17,7 +17,7 @@ export function TransactionHistory({ storeId, customerId }: { customerId: string
 		queryFn: async () => {
 			if (storeId && customerId) {
 				const formData = new FormData();
-				formData.append("customerId", customerId.toString())
+				formData.append("customerId", customerId)
 				formData.append("storeId", storeId?.toString())
 				const req = await fetch("/api/get-user-store-transactions", { body: formData, method: "POST" })
 				const data = await req.json() as {
@@ -86,6 +86,29 @@ export function TransactionHistory({ storeId, customerId }: { customerId: string
 								<div className="py-12 text-center text-muted-foreground">No transactions found for the selected filter.</div>
 							)}
 						</TabsContent>
+						<TabsContent value="earned">
+							{getTransactions?.data?.redeemEvents.map((event) => {
+								return (
+									<div key={event.id} className="grid grid-cols-12 p-3 text-sm">
+										<div className="col-span-3 text-muted-foreground">{event?.createdAt?.toLocaleDateString()}</div>
+										<div className="col-span-6">{event?.redeemable?.name}</div>
+										<div
+											className="col-span-3 text-right font-medium text-red-600"
+
+										>
+											{`- ${event.points_consumed}`}
+										</div>
+									</div>
+
+
+								)
+							})}
+
+							{getTransactions?.data?.redeemEvents?.length === 0 && (
+								<div className="py-12 text-center text-muted-foreground">No transactions found for the selected filter.</div>
+							)}
+						</TabsContent>
+
 					</Tabs>
 					<div className="flex items-center gap-2 ml-auto">
 						<Button
